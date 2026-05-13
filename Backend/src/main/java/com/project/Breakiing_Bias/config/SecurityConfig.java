@@ -66,7 +66,9 @@ public class SecurityConfig {
                 new CorsConfiguration();
 
         config.setAllowedOrigins(
-                List.of(frontendUrl)
+                List.of(
+                        "http://localhost:5173",
+                        frontendUrl)
         );
 
         config.setAllowedMethods(
