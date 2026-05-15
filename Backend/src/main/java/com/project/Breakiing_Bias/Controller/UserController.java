@@ -39,6 +39,11 @@ public class UserController {
     @Autowired
     private JwtService jwtService;
 
+    @GetMapping("/")
+    public String run(){
+        return "Server is running.............";
+    }
+
     // STEP 1
     @PostMapping("/start")
     public ResponseEntity<?> start(
