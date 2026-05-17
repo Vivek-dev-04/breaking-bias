@@ -12,6 +12,7 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   // Clear old auth
   useEffect(() => {
@@ -24,6 +25,7 @@ const Login = () => {
 
     e.preventDefault();
 
+    setIsLoading(true);
     setError('');
 
     try {
@@ -69,6 +71,8 @@ const Login = () => {
           'Something went wrong. Try again.'
         );
       }
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -77,6 +81,8 @@ const Login = () => {
     <AuthLayout
       title="Welcome Back"
       subtitle="Please enter your credentials to access your secure workspace."
+      isLoading={isLoading}
+      loadingMessage="AUTHENTICATING SESSION..."
     >
 
       <form onSubmit={handleLogin}>
@@ -159,28 +165,25 @@ const Login = () => {
               required
             />
 
-            <span
-              onClick={() =>
-                setShowPassword(!showPassword)
-              }
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              style={{
+                position: 'absolute',
+                right: '1rem',
+                background: 'none',
+                border: 'none',
+                padding: 0,
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: 'var(--text-secondary)',
+                zIndex: 10
+              }}
             >
-
-              {showPassword
-
-                ? <EyeOff
-                  size={18}
-                  className="input-icon"
-                  style={{ cursor: 'pointer' }}
-                />
-
-                : <Eye
-                  size={18}
-                  className="input-icon"
-                  style={{ cursor: 'pointer' }}
-                />
-              }
-
-            </span>
+              {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+            </button>
 
           </div>
 

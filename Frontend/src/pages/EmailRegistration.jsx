@@ -8,6 +8,7 @@ const EmailRegistration = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [submitted, setSubmitted] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   // const handleSubmit = async (e) => {
   //   e.preventDefault();
@@ -34,6 +35,8 @@ const EmailRegistration = () => {
 
     e.preventDefault();
 
+    setIsLoading(true);
+
     try {
 
       const response = await api.post(
@@ -56,6 +59,8 @@ const EmailRegistration = () => {
       alert(
         error.response?.data || "Something went wrong"
       );
+    } finally {
+      setIsLoading(false);
     }
   };
   if (submitted) {
@@ -74,7 +79,7 @@ const EmailRegistration = () => {
 
           <button
             className="btn-secondary"
-            onClick={() => navigate('/')}
+            onClick={() => navigate('/login')}
           >
             Back to Login
           </button>
@@ -87,6 +92,8 @@ const EmailRegistration = () => {
     <AuthLayout
       title="Create Account"
       subtitle="Enter your email address to get started."
+      isLoading={isLoading}
+      loadingMessage="TRANSMITTING SECURE VERIFICATION LINK..."
     >
       <form onSubmit={handleSubmit}>
         <div className="form-group">
@@ -107,7 +114,7 @@ const EmailRegistration = () => {
 
         <div style={{ textAlign: 'center', marginTop: '1.5rem', fontSize: '0.875rem' }}>
           <span style={{ color: 'var(--text-secondary)' }}>Already have an account? </span>
-          <Link to="/" style={{ color: 'var(--accent-blue)' }}>Sign In</Link>
+          <Link to="/login" style={{ color: 'var(--accent-blue)' }}>Sign In</Link>
         </div>
       </form>
     </AuthLayout>

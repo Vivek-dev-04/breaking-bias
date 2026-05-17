@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { User, Lock, Eye, Mail } from 'lucide-react';
+import { User, Lock, Eye, EyeOff, Mail } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import AuthLayout from '../layouts/AuthLayout';
 import api from '../api/axios';
@@ -10,6 +10,9 @@ const FullRegistration = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -18,6 +21,7 @@ const FullRegistration = () => {
       return;
     }
 
+    setIsLoading(true);
     try {
       const response = await api.post("/api/auth/complete", {
         email,
@@ -26,15 +30,19 @@ const FullRegistration = () => {
       });
       console.log(response.data);
       alert('Registration Complete!');
-      navigate('/');
+      navigate('/login');
     } catch (error) {
       console.log(error);
+    } finally {
+      setIsLoading(false);
     }
   };
   return (
     <AuthLayout
       title="Complete Profile"
       subtitle="Set up your username and password to finalize registration."
+      isLoading={isLoading}
+      loadingMessage="REGISTERING INTEL MATRIX WORKSPACE..."
     >
       <form onSubmit={handleSubmit}>
         <div className="form-group">
@@ -69,13 +77,31 @@ const FullRegistration = () => {
           <label className="form-label">Password</label>
           <div className="input-container">
             <input
-              type="password"
+              type={showPassword ? 'text' : 'password'}
               placeholder="••••••••"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
             />
-            <Lock size={18} className="input-icon" />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              style={{
+                position: 'absolute',
+                right: '1rem',
+                background: 'none',
+                border: 'none',
+                padding: 0,
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: 'var(--text-secondary)',
+                zIndex: 10
+              }}
+            >
+              {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+            </button>
           </div>
         </div>
 
@@ -83,13 +109,31 @@ const FullRegistration = () => {
           <label className="form-label">Confirm Password</label>
           <div className="input-container">
             <input
-              type="password"
+              type={showConfirmPassword ? 'text' : 'password'}
               placeholder="••••••••"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               required
             />
-            <Eye size={18} className="input-icon" style={{ cursor: 'pointer', pointerEvents: 'auto' }} />
+            <button
+              type="button"
+              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+              style={{
+                position: 'absolute',
+                right: '1rem',
+                background: 'none',
+                border: 'none',
+                padding: 0,
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: 'var(--text-secondary)',
+                zIndex: 10
+              }}
+            >
+              {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+            </button>
           </div>
         </div>
 

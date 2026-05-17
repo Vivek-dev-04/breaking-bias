@@ -9,18 +9,22 @@ const ForgotPassword = () => {
   const [username, setUsername] = useState('');
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     setMessage('');
 
+    setIsLoading(true);
     try {
       // Call the backend endpoint for starting forgot password
       const response = await api.post('/api/auth/forgot/start', { username });
       setMessage('A reset link has been sent to your registered email.');
     } catch (err) {
       setError('Failed to send reset link. Please check your username.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -28,6 +32,8 @@ const ForgotPassword = () => {
     <AuthLayout
       title="Forgot Password"
       subtitle="Enter your username to receive a password reset link."
+      isLoading={isLoading}
+      loadingMessage="TRANSMITTING RESET PASSWORD KEY..."
     >
       <form onSubmit={handleSubmit}>
         {error && (
@@ -62,7 +68,7 @@ const ForgotPassword = () => {
         <button
           type="button"
           className="btn-secondary"
-          onClick={() => navigate('/')}
+          onClick={() => navigate('/login')}
         >
           Back to Login
         </button>

@@ -7,6 +7,7 @@ import {
   Navigate
 } from 'react-router-dom';
 
+import Landing from './pages/Landing';
 import Login from './pages/Login';
 import EmailRegistration from './pages/EmailRegistration';
 import FullRegistration from './pages/FullRegistration';
@@ -21,8 +22,7 @@ const ProtectedRoute = ({ children }) => {
     localStorage.getItem('token');
 
   if (!token) {
-
-    return <Navigate to="/" replace />;
+    return <Navigate to="/login" replace />;
   }
 
   return children;
@@ -38,6 +38,11 @@ function App() {
 
         <Route
           path="/"
+          element={<Landing />}
+        />
+
+        <Route
+          path="/login"
           element={<Login />}
         />
 

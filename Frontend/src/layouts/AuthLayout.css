@@ -217,3 +217,98 @@
     margin-top: 4rem;
   }
 }
+
+/* Glassmorphic Loading Overlay */
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(13, 17, 23, 0.85);
+  backdrop-filter: blur(12px);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeInOverlay 0.3s ease forwards;
+}
+
+@keyframes fadeInOverlay {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.loading-content-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  background: rgba(22, 27, 34, 0.65);
+  border: 1px solid rgba(48, 54, 61, 0.8);
+  padding: 3rem 4rem;
+  border-radius: 16px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(0, 114, 255, 0.05);
+  animation: scaleInLoader 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes scaleInLoader {
+  from { transform: scale(0.95); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.loading-spinner-wrapper {
+  position: relative;
+  width: 64px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.loading-spinner {
+  animation: rotateLoader 1s linear infinite;
+  color: #00f0ff;
+  z-index: 2;
+}
+
+@keyframes rotateLoader {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.loading-pulse-ring {
+  position: absolute;
+  width: 48px;
+  height: 48px;
+  border: 2px solid rgba(0, 240, 255, 0.2);
+  border-radius: 50%;
+  animation: loaderPulse 2s infinite ease-in-out;
+  z-index: 1;
+}
+
+@keyframes loaderPulse {
+  0% { transform: scale(0.8); opacity: 0.5; box-shadow: 0 0 0 0 rgba(0, 240, 255, 0.2); }
+  50% { transform: scale(1.3); opacity: 0.9; box-shadow: 0 0 15px 4px rgba(0, 240, 255, 0.4); }
+  100% { transform: scale(0.8); opacity: 0.5; box-shadow: 0 0 0 0 rgba(0, 240, 255, 0.2); }
+}
+
+.loading-text {
+  font-weight: 700;
+  font-size: 1.1rem;
+  letter-spacing: 0.05em;
+  color: #fff;
+  margin: 0;
+  text-transform: uppercase;
+  background: linear-gradient(90deg, #fff, #a5b4fc);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.loading-subtext {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+}

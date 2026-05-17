@@ -13,6 +13,7 @@ const ResetPassword = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   // Extract token from URL query params (e.g., ?token=xyz)
   const queryParams = new URLSearchParams(location.search);
@@ -28,6 +29,7 @@ const ResetPassword = () => {
       return;
     }
 
+    setIsLoading(true);
     try {
       // Call the backend endpoint for completing password reset, sending both token and newPassword
       await api.post(
@@ -35,9 +37,11 @@ const ResetPassword = () => {
         { token, newPassword }
       );
       setMessage('Password successfully reset. You can now log in.');
-      setTimeout(() => navigate('/'), 2000);
+      setTimeout(() => navigate('/login'), 2000);
     } catch (err) {
       setError('Failed to reset password. The link might be invalid or expired.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -45,6 +49,8 @@ const ResetPassword = () => {
     <AuthLayout
       title="Reset Password"
       subtitle="Enter your new password below."
+      isLoading={isLoading}
+      loadingMessage="CRYPTOGRAPHICALLY RESETTING PASSWORD..."
     >
       <form onSubmit={handleSubmit}>
         {error && (
@@ -68,12 +74,25 @@ const ResetPassword = () => {
               onChange={(e) => setNewPassword(e.target.value)}
               required
             />
-            <span onClick={() => setShowPassword(!showPassword)}>
-              {showPassword
-                ? <EyeOff size={18} className="input-icon" style={{ cursor: 'pointer' }} />
-                : <Eye size={18} className="input-icon" style={{ cursor: 'pointer' }} />
-              }
-            </span>
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              style={{
+                position: 'absolute',
+                right: '1rem',
+                background: 'none',
+                border: 'none',
+                padding: 0,
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: 'var(--text-secondary)',
+                zIndex: 10
+              }}
+            >
+              {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+            </button>
           </div>
         </div>
 
@@ -87,12 +106,25 @@ const ResetPassword = () => {
               onChange={(e) => setConfirmPassword(e.target.value)}
               required
             />
-            <span onClick={() => setShowConfirmPassword(!showConfirmPassword)}>
-              {showConfirmPassword
-                ? <EyeOff size={18} className="input-icon" style={{ cursor: 'pointer' }} />
-                : <Eye size={18} className="input-icon" style={{ cursor: 'pointer' }} />
-              }
-            </span>
+            <button
+              type="button"
+              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+              style={{
+                position: 'absolute',
+                right: '1rem',
+                background: 'none',
+                border: 'none',
+                padding: 0,
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: 'var(--text-secondary)',
+                zIndex: 10
+              }}
+            >
+              {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+            </button>
           </div>
         </div>
 

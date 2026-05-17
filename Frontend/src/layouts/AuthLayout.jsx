@@ -1,10 +1,23 @@
 import React from 'react';
-import { Shield } from 'lucide-react';
+import { Shield, Loader2 } from 'lucide-react';
 import './AuthLayout.css';
 
-const AuthLayout = ({ children, title, subtitle }) => {
+const AuthLayout = ({ children, title, subtitle, isLoading, loadingMessage }) => {
   return (
     <div className="auth-layout">
+      {isLoading && (
+        <div className="loading-overlay">
+          <div className="loading-content-box">
+            <div className="loading-spinner-wrapper">
+              <Loader2 size={36} className="loading-spinner" />
+              <div className="loading-pulse-ring"></div>
+            </div>
+            <p className="loading-text">{loadingMessage || 'Establishing Secure Channel...'}</p>
+            <div className="loading-subtext">INTELLIGENT SYSTEMS INTEGRITY GUARD</div>
+          </div>
+        </div>
+      )}
+      
       <div className="auth-header animate-fade-in">
         <div className="logo-container">
           <Shield size={24} color="#fff" />

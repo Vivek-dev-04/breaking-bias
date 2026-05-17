@@ -38,7 +38,7 @@ const Dashboard = () => {
 
     if (!token) {
 
-      navigate('/');
+      navigate('/login');
     }
 
   }, []);
@@ -92,7 +92,7 @@ const Dashboard = () => {
 
         localStorage.removeItem('token');
 
-        navigate('/');
+        navigate('/login');
 
       } else {
 

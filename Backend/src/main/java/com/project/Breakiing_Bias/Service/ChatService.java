@@ -57,46 +57,34 @@ public class ChatService {
         System.out.println(json);
 
         return client.prompt(
-                        "You are a news fact-checking AI.\n" +
-                                "Your job is to verify the following CLAIM.\n\n" +
-                                "CLAIM TO VERIFY: " + newsText + "\n\n" +  // ← claim first
-                                "Use the following current news articles as context:\n" +
-                                "Articles: " + json + "\n\n" +
-                                "Return ONLY valid JSON:\n" +
-                                "{\n" +
-                                "  \"classification\": \"REAL | FAKE | PARTIALLY_TRUE | UNCERTAIN | MISLEADING\",\n" +
-                                "  \"confidence\": 0-100,\n" +
-                                "  \"facts\": [\"key facts that support or contradict the claim\"],\n" +
-                                "  \"reason\": \"explanation of verdict based on claim and articles\",\n" +
-                                "  \"indicators\": [\"specific signs supporting or contradicting the claim\"]\n" +
-                                "}\n\n" +
-                                "Rules:\n" +
-                                "- Focus ONLY on verifying the CLAIM\n" +
-                                "- Use articles as supporting context\n" +
-                                "- Do NOT analyze articles themselves\n" +
-                                "- Mark UNCERTAIN if no relevant articles found\n" +
-                                "- Avoid 100% confidence unless certain\n"
-                )
-                .call()
-                .content()
-                .replace("```json", "")
-                .replace("```", "")
-                .trim();
-    }
-
-    // ← fallback when no articles found
-    private String analyzeWithoutArticles(String newsText) {
-        return client.prompt(
-                        "You are a news fact-checking AI.\n" +
-                                "No current news articles found. Use your general knowledge to verify.\n\n" +
+                        "You are a STRICT news fact-checking AI. Your ONLY job is to verify if the claim is TRUE or FALSE.\n\n" +
                                 "CLAIM TO VERIFY: " + newsText + "\n\n" +
-                                "Return ONLY valid JSON:\n" +
+                                "CURRENT NEWS ARTICLES FOR CONTEXT:\n" + json + "\n\n" +
+                                "STRICT RULES - FOLLOW EXACTLY:\n" +
+                                "1. NEVER assume a claim is true just because it is stated confidently\n" +
+                                "2. ALWAYS cross-check names, positions, titles, dates, and numbers\n" +
+                                "3. If a person is claimed to hold a position (CM, PM, CEO, President etc.) " +
+                                "verify if they ACTUALLY hold that position\n" +
+                                "4. If articles CONTRADICT the claim → FAKE or MISLEADING\n" +
+                                "5. If articles SUPPORT the claim → REAL\n" +
+                                "6. If articles are UNRELATED → use your own verified knowledge\n" +
+                                "7. Scientific facts, historical facts, geographical facts must be verified strictly\n" +
+                                "8. Statistical claims (percentages, numbers) must be checked against known data\n" +
+                                "9. If a claim mixes true and false information → PARTIALLY_TRUE\n" +
+                                "10. Only use UNCERTAIN if you genuinely cannot verify with any available information\n\n" +
+                                "VERIFICATION CHECKLIST:\n" +
+                                "- Is the person real? ✓\n" +
+                                "- Does the person hold the claimed position? ✓\n" +
+                                "- Is the event/fact described accurate? ✓\n" +
+                                "- Are the numbers/dates/statistics correct? ✓\n" +
+                                "- Does any evidence contradict the claim? ✓\n\n" +
+                                "Return ONLY valid JSON with no markdown:\n" +
                                 "{\n" +
                                 "  \"classification\": \"REAL | FAKE | PARTIALLY_TRUE | UNCERTAIN | MISLEADING\",\n" +
                                 "  \"confidence\": 0-100,\n" +
-                                "  \"facts\": [\"key facts about the claim\"],\n" +
-                                "  \"reason\": \"explanation based on general knowledge\",\n" +
-                                "  \"indicators\": [\"supporting or contradicting signs\"]\n" +
+                                "  \"facts\": [\"verified facts that support or contradict the claim\"],\n" +
+                                "  \"reason\": \"clear explanation of why the claim is true or false\",\n" +
+                                "  \"indicators\": [\"specific evidence or red flags supporting the verdict\"]\n" +
                                 "}\n"
                 )
                 .call()
@@ -106,6 +94,43 @@ public class ChatService {
                 .trim();
     }
 
+    // ← fallback when no articles found
+
+        private String analyzeWithoutArticles(String newsText) {
+            return client.prompt(
+                            "You are a STRICT news fact-checking AI. Your ONLY job is to verify if the claim is TRUE or FALSE.\n\n" +
+                                    "CLAIM TO VERIFY: " + newsText + "\n\n" +
+                                    "No news articles found. Use your training knowledge strictly.\n\n" +
+                                    "STRICT RULES - FOLLOW EXACTLY:\n" +
+                                    "1. NEVER assume a claim is true just because it is stated confidently\n" +
+                                    "2. ALWAYS cross-check names, positions, titles, dates and numbers\n" +
+                                    "3. If a person is claimed to hold a position (CM, PM, CEO, President etc.) " +
+                                    "verify if they ACTUALLY hold that position right now\n" +
+                                    "4. Scientific facts, historical facts must be verified strictly\n" +
+                                    "5. Statistical claims must be checked against known data\n" +
+                                    "6. If a claim mixes true and false information → PARTIALLY_TRUE\n" +
+                                    "7. Only use UNCERTAIN if you genuinely cannot verify\n\n" +
+                                    "VERIFICATION CHECKLIST:\n" +
+                                    "- Is the person real? ✓\n" +
+                                    "- Does the person actually hold the claimed position? ✓\n" +
+                                    "- Is the event/fact described accurate? ✓\n" +
+                                    "- Are numbers/dates/statistics correct? ✓\n" +
+                                    "- Does any known fact contradict the claim? ✓\n\n" +
+                                    "Return ONLY valid JSON with no markdown:\n" +
+                                    "{\n" +
+                                    "  \"classification\": \"REAL | FAKE | PARTIALLY_TRUE | UNCERTAIN | MISLEADING\",\n" +
+                                    "  \"confidence\": 0-100,\n" +
+                                    "  \"facts\": [\"key verified facts about the claim\"],\n" +
+                                    "  \"reason\": \"clear explanation of why the claim is true or false\",\n" +
+                                    "  \"indicators\": [\"specific evidence supporting the verdict\"]\n" +
+                                    "}\n"
+                    )
+                    .call()
+                    .content()
+                    .replace("```json", "")
+                    .replace("```", "")
+                    .trim();
+        }
     private String safe(String s) {
         return s != null ? s : "";
     }
