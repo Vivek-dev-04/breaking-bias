@@ -58,7 +58,7 @@ public class emailService {
         TransactionalEmailsApi api = new TransactionalEmailsApi();
 
         SendSmtpEmailSender sender = new SendSmtpEmailSender();
-        sender.setEmail("abcae3001@smtp-brevo.com");
+        sender.setEmail("vivektikkiwal05@gmail.com"); // ← verified sender
         sender.setName("Breaking Bias");
 
         SendSmtpEmailTo to = new SendSmtpEmailTo();
